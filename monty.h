@@ -1,9 +1,14 @@
-#ifndef MONTY_H
-#define MONTY_H
-#define _GNU_SOURCE
-#include <stdlib.h>
+#ifndef _MONTY_H_
+#define _MONTY_H_
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <string.h>
+
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -20,42 +25,6 @@ typedef struct stack_s
 	struct stack_s *next;
 } stack_t;
 
-
-/**
- * struct setting - representation of  heap
- *@type: type of list stack or queue
- *@len: len of list
- *@number_args: number of args after parsing
- *@line_number: line of executed command
- *@arguments_: arguments after parsing
- *@cpy_line: cpy of line  after getline
- *@file_: file executed
- *@buffer_line: line allocated by getline
- *@head_list: head of the list
- *@tail_list: tail of the list
- * Description: doubly linked list node structure
- * for stack, queues, LIFO, FIFO Holberton project
- */
-typedef struct setting
-{
-	char *type;
-	size_t len;
-	unsigned int number_args;
-	unsigned int line_number;
-	/*memory free*/
-	char ***arguments_;
-	char *cpy_line;
-	FILE *file_;
-	char *buffer_line;
-	int state; /* 0 stack 1 queue*/
-	/*head of the list*/
-	stack_t **head_list, **tail_list;
-} setting_t;
-
-extern setting_t info;
-setting_t info;
-
-
 /**
  * struct instruction_s - opcode and its function
  * @opcode: the opcode
@@ -70,100 +39,27 @@ typedef struct instruction_s
 	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+/**
+ * struct global - Use in many files
+ * @num: Stack numbers.
+ * @buff: Buffer.
+ * @file: File to open.
+ */
+typedef struct global
+{
+	char *num;
+	char *buff;
+	FILE *file;
+} global;
+extern global gl;
 
-/* commands.c */
-void print_all(stack_t **stack, unsigned int line_number);
-void push(stack_t **stack, unsigned int line_number);
-void pop(stack_t **head, unsigned int line_number);
-void pint(stack_t **head, unsigned int line_number);
-void swap(stack_t **head, unsigned int line_number);
-
-/*commands_2.c*/
-void add(stack_t **head, unsigned int line_number);
-void nop(stack_t **head, unsigned int line_number);
-void sub(stack_t **head, unsigned int line_number);
-void div_(stack_t **head, unsigned int line_number);
-void mul_(stack_t **head, unsigned int line_number);
-
-/*commands_3.c*/
-void mod_(stack_t **head, unsigned int line_number);
-void pchar_(stack_t **head, unsigned int line_number);
-void print_string(stack_t **head, unsigned int line_number);
-void rot_(stack_t **head, unsigned int line_number);
-/* helpers.c */
-int to_number(int *number);
-int check_argument(char *opcode);
-
-/*execute*/
-void execute_file(void);
-void execute_line_(void);
-void initilize_heap_(void);
-
-
-/*node.c*/
-stack_t *new_node_(int n);
-void free_dlistint(void);
-stack_t *add_dnodeint_end(stack_t **head, int n);
-
-
-/* errors.c */
-void malloc_error(void);
-void invalid_args(void);
-void pint_error(void);
-void number_arguments_error(void);
-void file_error(char *msg);
-
-/*errors_2.c*/
-void unknown_ins(void);
-void pop_error(void);
-void swap_error(void);
-void add_error(void);
-void sub_error(void);
-
-/*error_3.c*/
-void div_error(void);
-void div_error_2(void);
-void mul_error(void);
-void mod_error(void);
-void pchar_error_2(void);
-
-/*error_4.c*/
-void pchar_error(void);
-
-/* utils.c*/
-int _isspace(int c);
-int _is_empty(char *s);
-char *ft_strdup(char *src);
-
-/*memory_clean.c*/
-void free_(char **parsed_buffer);
-void free_2_(char ***parsed_buffer);
-char **mall_c(int a);
-void free_all(int, int, int, int, int);
-void fill_info(char ***, FILE **, char **, char **);
-
-/* get_command.c*/
-void (*get_format(char *formato))(stack_t **, unsigned int);
-
-/*read_line.c*/
-void parser(char *buffer_line, char **pieces);
-
-/*stack_2.c*/
-void s_sub(stack_t **head);
-void s_div(stack_t **head);
-void s_mul(stack_t **head);
-void s_mod(stack_t **head);
-void s_pchar(stack_t **head);
-
-void s_print_string(stack_t **head);
-
-/*queue_2.c*/
-void q_sub(stack_t **head);
-void q_div(stack_t **head);
-void q_mul(stack_t **head);
-void q_mod(stack_t **head);
-void q_pchar(stack_t **head);
-void q_print_string(stack_t **head);
-
-
-#endif /* MONTY_H */
+void op_cmd(stack_t **h, unsigned int cnt, char *cmd);
+void _push(stack_t **h,  unsigned int cnt);
+void ultrafree(stack_t *h);
+void _pall(stack_t **h, unsigned int cnt);
+void _pint(stack_t **ptr, unsigned int cnt);
+void _pop(stack_t **ptr, unsigned int cnt);
+void _swap(stack_t **ptr, unsigned int cnt);
+void _add(stack_t **ptr, unsigned int cnt);
+void _nop(stack_t **ptr, unsigned int cnt);
+#endif /* _MONTY_H_ */
